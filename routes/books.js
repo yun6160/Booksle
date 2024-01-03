@@ -1,16 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const bookCon = require("../controller/BookController");
+const con = require("../controller/BookController");
 
 router.use(express.json());
 
-// 전체도서
-router.get("/", bookCon.allBooks);
+// 전체도서 or 카테고리 도서
+router.get("/", con.allBooks);
 
 // 개별도서
-router.get("/:bookid", bookCon.booksDetail);
-
-// 카테고리별 도서 api
-router.get("/", bookCon.booksByCategory);
+router.get("/:bookId", con.booksDetail);
 
 module.exports = router;

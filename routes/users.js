@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
-const userCon = require("../controller/UserController");
+const con = require("../controller/UserController");
 const { body, param, validationResult } = require("express-validator");
 
 const validate = (req, res, next) => {
@@ -23,15 +23,15 @@ router.post(
         body("password").notEmpty().isString().withMessage("비밀번호 확인 필요"),
         validate,
     ],
-    userCon.join
+    con.join
 );
 
 // 로그인
-router.post("/login", userCon.login);
+router.post("/login", con.login);
 
 // 비밀번호 초기화 요청
-router.post("/reset", userCon.resetPasswordRequest);
+router.post("/reset", con.resetPasswordRequest);
 // 비밀번호 초기화
-router.put("/reset", userCon.resetPassword);
+router.put("/reset", con.resetPassword);
 
 module.exports = router;
