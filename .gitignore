@@ -193,4 +193,8 @@ dist
 .history
 .ionide
 
+# database 관련
+data.sql
+mariadb.js
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,node
