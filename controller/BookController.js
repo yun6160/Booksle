@@ -4,22 +4,29 @@ const dotenv = require("dotenv").config();
 
 let bookCon = {
     allBooks: (req, res) => {
-        let { category_id, newBook } = req.query;
+        let { category_id, newBook, limit, currentPage } = req.query;
+
+        // limit : page 당 도서 수 ex.3
+        // currentPage : 현재 몇 페이지 ex. 1,2,3...
+        // offset :                     ex.0, 3, 6, 9
+        let offset = limit * (currentPage - 1);
         let sql = "SELECT * FROM books WHERE 1=1";
-        let value = "";
+        let values = [];
         if (category_id) {
-            sql += "AND category_id = ?";
-            value = category_id;
+            sql += " AND category_id = ?";
+            values.push(category_id);
         }
         if (newBook) {
-            sql += "AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 4 MONTH) and NOW()";
+            sql += " AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) and NOW()";
         }
+        values.push(parseInt(limit), offset);
+        sql += " LIMIT ? OFFSET ? ";
 
-        conn.query(sql, value, (err, results) => {
+        conn.query(sql, values, (err, results) => {
             if (err) {
+                console.log(err);
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
-
             if (results.length) {
                 res.status(StatusCodes.OK).json(results);
             } else {
@@ -37,7 +44,7 @@ let bookCon = {
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
             let book = results[0];
-            console.log(book);
+            console.log(results);
 
             if (book) {
                 res.status(StatusCodes.OK).json(book);
