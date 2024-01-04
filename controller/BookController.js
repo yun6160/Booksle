@@ -24,6 +24,7 @@ let bookCon = {
 
         conn.query(sql, values, (err, results) => {
             if (err) {
+                console.log(err);
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
             if (results.length) {
