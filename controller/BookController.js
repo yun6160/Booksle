@@ -4,15 +4,17 @@ const dotenv = require("dotenv").config();
 
 let bookCon = {
     allBooks: (req, res) => {
-        let { category_id } = req.query;
-        let sql = "";
+        let { category_id, newBook } = req.query;
+        let sql = "SELECT * FROM books WHERE 1=1";
         let value = "";
         if (category_id) {
-            sql = "SELECT * FROM books WHERE category_id = ?";
+            sql += "AND category_id = ?";
             value = category_id;
-        } else {
-            sql = "SELECT * FROM books";
         }
+        if (newBook) {
+            sql += "AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 4 MONTH) and NOW()";
+        }
+
         conn.query(sql, value, (err, results) => {
             if (err) {
                 return res.status(StatusCodes.BAD_REQUEST).end();
@@ -29,12 +31,13 @@ let bookCon = {
     },
     booksDetail: (req, res) => {
         const { bookId } = req.params;
-        let sql = "SELECT * FROM books WHERE id = ?";
+        let sql = "select * from books left join category on books.category_id = category.id where books.id = ?";
         conn.query(sql, bookId, function (err, results) {
             if (err) {
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
             let book = results[0];
+            console.log(book);
 
             if (book) {
                 res.status(StatusCodes.OK).json(book);
