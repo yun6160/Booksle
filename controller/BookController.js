@@ -9,7 +9,7 @@ let bookCon = {
         // currentPage : 현재 몇 페이지 ex. 1,2,3...
         // offset :                     ex.0, 3, 6, 9
         let offset = limit * (currentPage - 1);
-        let sql = "SELECT * FROM books WHERE 1=1";
+        let sql = "SELECT *, (select count(*) from likes where liked_book_id = books.id) AS likes FROM books WHERE 1=1";
         let values = [];
         if (category_id) {
             sql += " AND category_id = ?";
@@ -36,8 +36,11 @@ let bookCon = {
     },
     booksDetail: (req, res) => {
         const { bookId } = req.params;
-        let sql = "select * from books left join category on books.category_id = category.id where books.id = ?";
-        conn.query(sql, bookId, function (err, results) {
+        const { user_id } = req.body;
+        const values = [user_id, bookId];
+        let sql =
+            "select *, (select count(*) from likes where liked_book_id = books.id) AS likes, (select exists (select * from likes where user_id = ? and liked_book_id = books.id)) AS liked from books left join category on books.category_id = category.id where books.id = ?";
+        conn.query(sql, values, function (err, results) {
             if (err) {
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
