@@ -12,7 +12,6 @@ let likeCon = {
         let values = [user_id, bookid];
         conn.query(sql, values, (err, results) => {
             if (err) {
-                console.log(err);
                 return res.status(StatusCodes.BAD_REQUEST).end();
             }
             res.status(StatusCodes.CREATED).json("좋아요 추가");
