@@ -38,6 +38,7 @@ let userCon = {
                 const token = jwt.sign(
                     {
                         email: loginUser.email,
+                        id: loginUser.id,
                     },
                     process.env.PRIVATE_KEY,
                     {
